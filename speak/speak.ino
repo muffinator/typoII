@@ -24,10 +24,10 @@ volatile unsigned int dupea[22]={
   
 volatile char ploop = 0;
 
+void synthInit(void);
 
 ISR(TIMER1_CAPT_vect){
    // PORTB |= 0x20;
-    sample = ICR1-sample;
     TCCR1B ^= 0x40;  //flip the edge trigger
     response++;
    // PORTB &= ~0x20;
@@ -58,18 +58,7 @@ void setup() {
   PORTB |= 0x24;
   PORTB &= ~0x20;
   
-  TCCR1A = (1<<WGM11)|(1<<WGM10)|(1<<COM1B0)|(1<<COM1B1);
-		 //oc1b toggle on compare match, fast PWM mode
-  TCCR1B = (1<<WGM12)|(1<<WGM13)|(0<<CS10)|(0<<ICES1); 
-		//CTC and no prescaler, falling edge(0x40)
-  TCCR1C = 0;
-  TCNT1 = 0;
-  
-  OCR1A = 1000;
-  OCR1B=0;
-  //TIMSK1 = 0x21;
-  TIMSK1 = 0x01|(0<<OCIE1A)|(1<<OCIE1B); //overflow and compare interrupts
-  TCCR1B |= 1<<CS10;
+  synthInit();
   
   sei();
 }
@@ -79,30 +68,23 @@ void loop() {
     //wait = 0;
     delayMicroseconds(72);
     if(wait>=6) {
-      delay(1000);
       wait=0;
       dindex=0;
     }
-    TCCR1A = (1<<WGM11)|(1<<WGM10)|(1<<COM1B0)|(1<<COM1B1);
-    TCCR1B = (1<<WGM12)|(1<<WGM13);
-    TCNT1 = 0;
-    OCR1A = 1000;
-    OCR1B = 10;
-    TIMSK1 = (1<<TOIE1)|(1<<OCIE1B);
     response=0;
-    TCCR1B |= (1<<CS10);
+    synthInit();
     PORTB &= ~0x10;
   }
-  
-  //if(dindex>=8){dindex=0;}
-  
-  if(ploop==1) {
-    Serial.begin(115200);
-    for(int y=0;y<x;y++) {
-      //Serial.println(sample[y]);
-    }
-    index=0;
-    ploop=0;
-    TIMSK1 |= 0x21;
-  }
 }
+
+
+void synthInit(void) {
+  TCCR1A = (1<<WGM11)|(1<<WGM10)|(1<<COM1B0)|(1<<COM1B1);
+  TCCR1B = (1<<WGM12)|(1<<WGM13)|(0<<CS10)|(0<<ICES1);
+  TCNT1 = 0;
+  OCR1A = 1000;
+  OCR1B = 0;
+  TIMSK1 = (1<<TOIE1)|(1<<OCIE1B);
+  TCCR1B |= (1<<CS10);
+}
+
