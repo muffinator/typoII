@@ -1,0 +1,27 @@
+-------
+License
+-------
+
+Typo II was written by Josh Gordonson under the Creative Commons Attribution-ShareAlike 3.0 License. 
+To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/; or, send a letter to
+
+Creative Commons, 171 2nd Street, Suite 300, 
+San Francisco, California, 94105, USA.
+
+-------
+Typo II
+-------
+
+TypoII is being developed for an IBM Wheelwriter 6 typewriter.  The idea is to be able to read from and write to the keyboard bus, enabling complete control of the typewriter.  For now, this will enable the typewriter to function as a paper-trail terminal to a computer, and I'll play text-adventure games on it.
+
+-----------
+Directories
+-----------
+
+Graph/ is an old prototype for visualizing the keyboard bus waveform
+
+Record/ is an arduino sketch that records the keyboard bus waveform by using the ICP interrupt function
+
+Speak/ is an arduino sketch that 'plays back' one of the waveform recordings from record, but also listens for ACK's from the controller board.
+
+
